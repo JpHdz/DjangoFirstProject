@@ -1,9 +1,13 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'votaciones/style.css' %}" />
 {% if latest_question_list %}
 <ul>
   {% for question in latest_question_list %}
   <li>
     <!-- <a href="/encuestas/{{ question.id }}/">{{ question.question_text }}</a> -->
-    <a href="{% url 'detail' question.id %}">{{question.question_text}}</a>
+    <a href="{% url 'votaciones:detail' question.id %}"
+      >{{question.question_text}}</a
+    >
   </li>
   {% endfor %}
 </ul>
