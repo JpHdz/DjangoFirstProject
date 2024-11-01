@@ -3,7 +3,7 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import Question
+from .models import Question, Choice
 from django.urls import reverse
 # Create your tests here.
 
@@ -119,3 +119,46 @@ class QuestionDetailViewTests(TestCase):
         url = reverse("votaciones:detail", args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+        
+
+
+# class RespuestaModelTest(TestCase):
+#     def test_future_question(self):
+#         """
+#         The detail view of a question with a pub_date in the future
+#         returns a 404 not found.
+#         """
+#         future_question = create_question(question_text="Future question.", days=5)
+#         url = reverse("votaciones:detail", args=(future_question.id,))
+#         response = self.client.get(url)
+#         self.assertEqual(response.status_code, 404)
+
+#         with self.assertRaises(Question.DoesNotExist):
+#             Question.objects.get(pk=future_question.id)
+
+#         with self.assertRaises(Question.DoesNotExist):
+#             Question.objects.get(pk=future_question.id)
+
+
+class RespuestaModelTest(TestCase):
+    def test_crear_respuesta_para_pregunta(self):
+        pregunta = Question(question_text="¿Te gusta viajar?", pub_date = timezone.now())
+        pregunta.save()
+        respuesta = Choice(question=pregunta, choice_text="Si", votes=0)
+        respuesta.save()
+        self.assertEqual(respuesta.question, pregunta)
+
+    def test_eliminar_pregunta_con_sus_respuestas(self):
+        pregunta = Question(question_text="What's up?", pub_date = timezone.now())
+        pregunta.save()
+        respuesta = Choice(question=pregunta, choice_text="Good", votes=0)
+        respuesta.save()
+        pregunta_id = pregunta.id
+        respuesta_id = respuesta.id
+        pregunta.delete()
+
+        with self.assertRaises(Question.DoesNotExist):
+            Question.objects.get(pk=pregunta_id)
+
+        with self.assertRaises(Choice.DoesNotExist):
+            Choice.objects.get(pk=respuesta_id)
