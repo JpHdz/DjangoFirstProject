@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.db.models import F
 from django.views import generic
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 class IndexView(generic.ListView):
@@ -27,6 +28,20 @@ class DetailView(generic.DetailView):
 class ResultsView(generic.DetailView):
    model = Question
    template_name = "votaciones/results.html"
+   
+@login_required
+def vote(request, pregunta_id):
+    pregunta = get_object_or_404(Question, pk=pregunta_id)
+    try:
+        respuesta_seleccionada = pregunta.respuesta_set.get(pk=request.POST["respuesta"])
+    except (KeyError,Choice.DoesNotExist):
+        return render(request, "votaciones/detalle.html", {"pregunta":pregunta, "error_message": "No has seleccionado una respuesta"})
+    else:
+        respuesta_seleccionada.votos = F("votos") + 1
+        respuesta_seleccionada.save()
+        return HttpResponseRedirect(reverse("votaciones:results", args=(pregunta.id,)))
+    #//return HttpResponse("Estas votando en la pregunta %s" % pregunta_id)
+
    
 
 

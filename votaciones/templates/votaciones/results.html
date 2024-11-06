@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'votaciones/results.css' %}" />
 <h1>{{ question.question_text }}</h1>
 
 <ul>
@@ -10,3 +12,4 @@
 </ul>
 
 <a href="{% url 'votaciones:detail' question.id %}">Vote again?</a>
+<a href="{% url 'votaciones:index' %}">Ver todas las preguntas</a>

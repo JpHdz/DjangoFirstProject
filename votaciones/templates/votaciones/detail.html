@@ -4,7 +4,8 @@
   <li>{{ choice.choice_text }}</li>
   {% endfor %}
 </ul> -->
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'votaciones/detail.css' %}" />
 <form action="{% url 'votaciones:vote' question.id %}" method="post">
   {% csrf_token %}
   <fieldset>
@@ -24,3 +25,4 @@
   </fieldset>
   <input type="submit" value="Vote" />
 </form>
+<a href="{% url 'votaciones:index' %}">Ver todas las preguntas</a>
