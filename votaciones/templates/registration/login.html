@@ -7,14 +7,21 @@
     <link rel="stylesheet" href="{% static 'votaciones/login.css' %}" />
     <title>Iniciar sesión</title>
   </head>
+
   <body>
-    <h2>Encuesta para votaciones</h2>
-    <form method="post">
-      {% csrf_token %} {{form.as_p}}
-      <button type="submit">Iniciar</button>
-    </form>
-    {% if form.errors %}
-    <p>El usuario o la contraseña son incorrectas</p>
-    {% endif %}
+    <div class="login-container">
+      <h2>Acceso a la encuesta</h2>
+      <p class="test-info">
+        Usuario de prueba: <strong>test</strong> | Contraseña:
+        <strong>test00077462</strong>
+      </p>
+      <form method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit">Iniciar sesión</button>
+      </form>
+      {% if form.errors %}
+      <p class="error-msg">⚠️ Usuario o contraseña incorrectos</p>
+      {% endif %}
+    </div>
   </body>
 </html>

@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.db.models import F
 from django.views import generic
 from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin,generic.ListView):
    template_name = "votaciones/index.html"
    context_object_name = "latest_question_list"
 
@@ -18,14 +19,14 @@ class IndexView(generic.ListView):
       # return []
       # return Question.objects.order_by("-pub_date")[:5]
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
    model = Question
    template_name = "votaciones/detail.html"
    def get_queryset(self):
        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
-class ResultsView(generic.DetailView):
+class ResultsView(LoginRequiredMixin, generic.DetailView):
    model = Question
    template_name = "votaciones/results.html"
    
@@ -35,7 +36,7 @@ def vote(request, pregunta_id):
     try:
         respuesta_seleccionada = pregunta.respuesta_set.get(pk=request.POST["respuesta"])
     except (KeyError,Choice.DoesNotExist):
-        return render(request, "votaciones/detalle.html", {"pregunta":pregunta, "error_message": "No has seleccionado una respuesta"})
+        return render(request, "votaciones/detail.html", {"pregunta":pregunta, "error_message": "No has seleccionado una respuesta"})
     else:
         respuesta_seleccionada.votos = F("votos") + 1
         respuesta_seleccionada.save()
